@@ -1,0 +1,113 @@
+{{define "title"}}r/{{.Subreddit.Name}} に投稿する · reddit_clone{{end}}
+{{define "content"}}
+<div class="max-w-2xl mx-auto mt-8 px-4">
+  <h1 class="text-xl font-bold mb-4">r/{{.Subreddit.Name}} に投稿する</h1>
+
+  <!-- タブ切り替え -->
+  <div class="flex border-b border-gray-200 mb-4" id="type-tabs">
+    <button
+      onclick="switchType('text')"
+      id="tab-text"
+      class="px-6 py-2 text-sm font-bold border-b-2 border-blue-500 text-blue-500"
+    >
+      📝 テキスト
+    </button>
+    <button
+      onclick="switchType('link')"
+      id="tab-link"
+      class="px-6 py-2 text-sm text-gray-500 hover:text-gray-700"
+    >
+      🔗 リンク
+    </button>
+  </div>
+
+  <form action="/r/{{.Subreddit.Name}}/submit" method="post"
+    class="bg-white border border-gray-200 rounded p-4 space-y-4">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+
+    <input type="hidden" name="post_type" id="post_type" value="{{.PostType}}" />
+
+    <div>
+      <input type="text" name="title"
+        value="{{.Title}}"
+        placeholder="タイトルを入力してください"
+        class="w-full border {{if .Errors.Title}}border-red-400{{else}}border-gray-300{{end}}
+               rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-400"
+      />
+      {{if .Errors.Title}}
+        <p class="text-red-500 text-xs mt-1">{{.Errors.Title}}</p>
+      {{end}}
+    </div>
+
+    <!-- テキスト入力欄 -->
+    <div id="body-section">
+      <textarea name="body" rows="6"
+        placeholder="本文を入力してください"
+        class="w-full border {{if .Errors.Body}}border-red-400{{else}}border-gray-300{{end}} rounded px-3 py-2 text-sm
+               focus:outline-none focus:border-blue-400 resize-none"
+      >{{.Body}}</textarea>
+      {{if .Errors.Body}}
+        <p class="text-red-500 text-xs mt-1">{{.Errors.Body}}</p>
+      {{end}}
+    </div>
+
+    <!-- URL 入力欄 -->
+    <div id="url-section" class="hidden">
+      <input type="url" name="url"
+        value="{{.URL}}"
+        placeholder="https://example.com"
+        class="w-full border {{if .Errors.URL}}border-red-400{{else}}border-gray-300{{end}}
+               rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-400"
+      />
+      {{if .Errors.URL}}
+        <p class="text-red-500 text-xs mt-1">{{.Errors.URL}}</p>
+      {{end}}
+    </div>
+
+    {{if .Errors.General}}
+      <p class="text-red-500 text-xs">{{.Errors.General}}</p>
+    {{end}}
+
+    <div class="flex justify-end gap-2">
+      <a href="/r/{{.Subreddit.Name}}"
+        class="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50">
+        キャンセル
+      </a>
+      <button type="submit"
+        class="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">
+        投稿する
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<script>
+  function switchType(type) {
+    document.getElementById("post_type").value = type;
+
+    const tabText = document.getElementById("tab-text");
+    const tabLink = document.getElementById("tab-link");
+    const bodySection = document.getElementById("body-section");
+    const urlSection = document.getElementById("url-section");
+
+    const activeClass = "px-6 py-2 text-sm font-bold border-b-2 border-blue-500 text-blue-500";
+    const inactiveClass = "px-6 py-2 text-sm text-gray-500 hover:text-gray-700";
+
+    if (type === "text") {
+      tabText.className = activeClass;
+      tabLink.className = inactiveClass;
+      bodySection.classList.remove("hidden");
+      urlSection.classList.add("hidden");
+    } else {
+      tabText.className = inactiveClass;
+      tabLink.className = activeClass;
+      bodySection.classList.add("hidden");
+      urlSection.classList.remove("hidden");
+    }
+  }
+
+  // 再表示時（バリデーションエラーなど）も現在の post_type に合わせる
+  switchType("{{.PostType}}");
+</script>
+{{end}}

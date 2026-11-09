@@ -1,0 +1,55 @@
+{{define "title"}}u/{{.ProfileUser.Username}} · reddit_clone{{end}}
+{{define "content"}}
+<div class="max-w-3xl mx-auto px-4 py-6">
+
+  <!-- ユーザー情報 -->
+  <div class="bg-white border border-gray-200 rounded p-6 mb-4">
+    <h1 class="text-2xl font-bold text-gray-900">
+      u/{{.ProfileUser.Username}}
+    </h1>
+    <p class="text-sm text-gray-400 mt-1">
+      {{.ProfileYear}}年{{.ProfileMonth}}月に登録
+    </p>
+
+    <!-- Karma -->
+    <div class="flex gap-6 mt-4 pt-4 border-t border-gray-100">
+      <div class="text-center">
+        <p class="text-xl font-bold text-gray-800">
+          {{formatKarma .ProfileUser.PostKarma}}
+        </p>
+        <p class="text-xs text-gray-400">Post Karma</p>
+      </div>
+      <div class="text-center">
+        <p class="text-xl font-bold text-gray-800">
+          {{formatKarma .ProfileUser.CommentKarma}}
+        </p>
+        <p class="text-xs text-gray-400">Comment Karma</p>
+      </div>
+      <div class="text-center">
+        <p class="text-xl font-bold text-gray-800">
+          {{formatKarma (add .ProfileUser.PostKarma .ProfileUser.CommentKarma)}}
+        </p>
+        <p class="text-xs text-gray-400">合計 Karma</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 投稿一覧 -->
+  <h2 class="text-sm font-bold text-gray-500 uppercase mb-3">投稿</h2>
+
+  {{if .Posts}}
+    {{range .Posts}}
+      {{template "post_card" (card . $.CurrentUser $.ShowSubreddit)}}
+    {{end}}
+  {{else}}
+    <div class="bg-white border border-gray-200 rounded p-8 text-center">
+      <p class="text-gray-400 text-sm">まだ投稿がありません</p>
+    </div>
+  {{end}}
+
+</div>
+
+<!-- 報告モーダル -->
+{{template "report_modal" .}}
+
+{{end}}

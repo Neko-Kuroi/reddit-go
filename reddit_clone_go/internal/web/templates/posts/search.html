@@ -1,0 +1,77 @@
+{{define "title"}}{{if .Query}}「{{.Query}}」の検索結果{{else}}検索{{end}} · reddit_clone{{end}}
+{{define "content"}}
+<div class="max-w-4xl mx-auto px-4 py-6">
+
+  <form action="/search" method="get" class="mb-6">
+    <div class="flex gap-2">
+      <input type="text" name="q" value="{{.Query}}"
+        placeholder="キーワードを入力..."
+        autofocus
+        class="flex-1 border border-gray-300 rounded px-4 py-2 text-sm
+               focus:outline-none focus:border-blue-400"
+      />
+      <button type="submit"
+        class="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+        検索
+      </button>
+    </div>
+  </form>
+
+  {{if not .Query}}
+    <p class="text-gray-400 text-center py-12">キーワードを入力して検索してください</p>
+  {{else}}
+    <h1 class="text-lg font-bold mb-4">「{{.Query}}」の検索結果</h1>
+
+    <div class="flex gap-4">
+
+      <!-- 投稿 -->
+      <div class="flex-1">
+        <h2 class="text-sm font-bold text-gray-500 uppercase mb-3">
+          投稿 {{if .Posts}}({{len .Posts}}件){{end}}
+        </h2>
+
+        {{if .Posts}}
+          {{range .Posts}}
+            {{template "post_card" (card . $.CurrentUser $.ShowSubreddit)}}
+          {{end}}
+        {{else}}
+          <div class="bg-white border border-gray-200 rounded p-6 text-center">
+            <p class="text-gray-400 text-sm">投稿が見つかりませんでした</p>
+          </div>
+        {{end}}
+      </div>
+
+      <!-- コミュニティ -->
+      <div class="w-64 shrink-0">
+        <h2 class="text-sm font-bold text-gray-500 uppercase mb-3">
+          コミュニティ {{if .Subreddits}}({{len .Subreddits}}件){{end}}
+        </h2>
+
+        {{if .Subreddits}}
+          {{range .Subreddits}}
+            <div class="bg-white border border-gray-200 rounded p-3 mb-2 hover:border-gray-400">
+              <a href="/r/{{.Name}}" class="block">
+                <p class="font-medium text-sm">r/{{.Name}}</p>
+                {{if .Description}}
+                  <p class="text-xs text-gray-400 mt-1 truncate">
+                    {{.Description}}
+                  </p>
+                {{end}}
+              </a>
+            </div>
+          {{end}}
+        {{else}}
+          <div class="bg-white border border-gray-200 rounded p-4 text-center">
+            <p class="text-gray-400 text-sm">見つかりませんでした</p>
+          </div>
+        {{end}}
+      </div>
+
+    </div>
+  {{end}}
+</div>
+
+<!-- 報告モーダル -->
+{{template "report_modal" .}}
+
+{{end}}

@@ -1,0 +1,54 @@
+{{define "title"}}ログイン · reddit_clone{{end}}
+{{define "content"}}
+<div class="max-w-md mx-auto mt-16 p-6">
+  <h1 class="text-2xl font-bold mb-6">ログイン</h1>
+
+  {{if .Error}}
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4 text-sm">
+      {{.Error}}
+    </div>
+  {{end}}
+
+  <form action="/login" method="post" class="space-y-4">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+
+    <!-- メールアドレス -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">
+        メールアドレス
+      </label>
+      <input
+        type="email"
+        name="email"
+        value="{{.Email}}"
+        class="w-full border border-gray-300 rounded px-3 py-2 text-sm
+               focus:outline-none focus:border-blue-400"
+      />
+    </div>
+
+    <!-- パスワード -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">
+        パスワード
+      </label>
+      <input
+        type="password"
+        name="password"
+        class="w-full border border-gray-300 rounded px-3 py-2 text-sm
+               focus:outline-none focus:border-blue-400"
+      />
+    </div>
+
+    <button type="submit"
+      class="w-full bg-blue-500 text-white rounded py-2 text-sm font-medium hover:bg-blue-600">
+      ログイン
+    </button>
+
+  </form>
+
+  <p class="mt-4 text-center text-sm text-gray-500">
+    アカウントをお持ちでないですか？
+    <a href="/register" class="text-blue-500 hover:underline">新規登録</a>
+  </p>
+</div>
+{{end}}

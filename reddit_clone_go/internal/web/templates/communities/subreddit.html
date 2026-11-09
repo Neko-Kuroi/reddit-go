@@ -1,0 +1,56 @@
+{{define "title"}}r/{{.Subreddit.Name}} · reddit_clone{{end}}
+{{define "content"}}
+<div class="max-w-4xl mx-auto px-4 py-4 flex gap-4">
+
+  <!-- メインカラム -->
+  <div class="flex-1">
+
+    <!-- ソートタブ -->
+    <div class="bg-white border border-gray-200 rounded p-2 mb-4 flex gap-2">
+      <a href="/r/{{.Subreddit.Name}}?sort=hot"
+        class="{{if eq .Sort "hot"}}px-4 py-1 rounded bg-gray-200 font-bold text-sm{{else}}px-4 py-1 rounded hover:bg-gray-100 text-sm text-gray-600{{end}}">
+        🔥 Hot
+      </a>
+      <a href="/r/{{.Subreddit.Name}}?sort=new"
+        class="{{if eq .Sort "new"}}px-4 py-1 rounded bg-gray-200 font-bold text-sm{{else}}px-4 py-1 rounded hover:bg-gray-100 text-sm text-gray-600{{end}}">
+        ✨ New
+      </a>
+    </div>
+
+    <!-- 投稿一覧 -->
+    <div id="post-list">
+      {{template "post_list" .PostList}}
+    </div>
+
+  </div>
+
+  <!-- サイドバー -->
+  <div class="w-72 shrink-0">
+    <div class="bg-white border border-gray-200 rounded p-4">
+      <h2 class="font-bold text-lg mb-2">r/{{.Subreddit.Name}}</h2>
+
+      {{if .Subreddit.Description}}
+        <p class="text-sm text-gray-600 mb-4">{{.Subreddit.Description}}</p>
+      {{end}}
+
+      <!-- Join / Leave ボタン -->
+      {{if .CurrentUser}}
+        <div id="join-button">
+          {{template "join_button" .JoinButton}}
+        </div>
+
+        <a href="/r/{{.Subreddit.Name}}/submit"
+          class="block w-full mt-2 border border-gray-300 text-center
+                 rounded-full py-1 text-sm hover:bg-gray-50">
+          投稿する
+        </a>
+      {{end}}
+    </div>
+  </div>
+
+</div>
+
+<!-- 報告モーダル -->
+{{template "report_modal" .}}
+
+{{end}}

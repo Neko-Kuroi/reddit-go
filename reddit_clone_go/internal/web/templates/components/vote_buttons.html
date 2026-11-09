@@ -1,0 +1,21 @@
+{{define "vote_buttons"}}
+<div class="flex flex-col items-center gap-0.5">
+  <button
+    hx-post="/{{.TargetType}}s/{{.TargetID}}/vote"
+    hx-vals='{"value": 1}'
+    hx-target="#{{.TargetType}}-vote-{{.TargetID}}"
+    hx-swap="innerHTML"
+    class="text-gray-400 hover:text-orange-500 text-sm"
+  >▲</button>
+
+  <span class="text-xs font-bold text-gray-700">{{.Score}}</span>
+
+  <button
+    hx-post="/{{.TargetType}}s/{{.TargetID}}/vote"
+    hx-vals='{"value": -1}'
+    hx-target="#{{.TargetType}}-vote-{{.TargetID}}"
+    hx-swap="innerHTML"
+    class="text-gray-400 hover:text-blue-500 text-sm"
+  >▼</button>
+</div>
+{{end}}

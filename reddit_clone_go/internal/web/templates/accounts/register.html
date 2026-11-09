@@ -1,0 +1,78 @@
+{{define "title"}}ユーザー登録 · reddit_clone{{end}}
+{{define "content"}}
+<div class="max-w-md mx-auto mt-16 p-6">
+  <h1 class="text-2xl font-bold mb-6">アカウントを作成</h1>
+
+  {{if .Errors.General}}
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4 text-sm">
+      {{.Errors.General}}
+    </div>
+  {{end}}
+
+  <form action="/register" method="post" class="space-y-4">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+
+    <!-- ユーザー名 -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">
+        ユーザー名
+      </label>
+      <input
+        type="text"
+        name="username"
+        value="{{.Username}}"
+        placeholder="例: alice"
+        class="w-full border {{if .Errors.Username}}border-red-400{{else}}border-gray-300{{end}}
+               rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-400"
+      />
+      {{if .Errors.Username}}
+        <p class="text-red-500 text-xs mt-1">{{.Errors.Username}}</p>
+      {{end}}
+    </div>
+
+    <!-- メールアドレス -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">
+        メールアドレス
+      </label>
+      <input
+        type="email"
+        name="email"
+        value="{{.Email}}"
+        class="w-full border {{if .Errors.Email}}border-red-400{{else}}border-gray-300{{end}}
+               rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-400"
+      />
+      {{if .Errors.Email}}
+        <p class="text-red-500 text-xs mt-1">{{.Errors.Email}}</p>
+      {{end}}
+    </div>
+
+    <!-- パスワード -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">
+        パスワード（8文字以上）
+      </label>
+      <input
+        type="password"
+        name="password"
+        class="w-full border {{if .Errors.Password}}border-red-400{{else}}border-gray-300{{end}}
+               rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-400"
+      />
+      {{if .Errors.Password}}
+        <p class="text-red-500 text-xs mt-1">{{.Errors.Password}}</p>
+      {{end}}
+    </div>
+
+    <button type="submit"
+      class="w-full bg-blue-500 text-white rounded py-2 text-sm font-medium hover:bg-blue-600">
+      登録する
+    </button>
+
+  </form>
+
+  <p class="mt-4 text-center text-sm text-gray-500">
+    すでにアカウントをお持ちですか？
+    <a href="/login" class="text-blue-500 hover:underline">ログイン</a>
+  </p>
+</div>
+{{end}}

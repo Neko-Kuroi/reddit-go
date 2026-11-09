@@ -1,0 +1,80 @@
+{{define "report_modal"}}
+<!-- ページの末尾に1つだけ配置する -->
+
+<!-- 背景オーバーレイ（クリックで閉じる） -->
+<div id="report-overlay"
+  class="hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+  onclick="closeReportModal()"
+></div>
+
+<!-- モーダル本体 -->
+<div id="report-modal"
+  class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"
+>
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+
+    <!-- ヘッダー -->
+    <div class="flex justify-between items-center p-4 border-b border-gray-200">
+      <h2 class="text-lg font-bold">報告する</h2>
+      <button onclick="closeReportModal()"
+        class="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+    </div>
+
+    <!-- 報告フォーム -->
+    <div class="p-4">
+      <p class="text-sm text-gray-600 mb-3">報告する理由を選択してください</p>
+
+      <!-- hidden フィールド（JavaScript でセットする） -->
+      <!-- hx-include は name 属性のある要素の値を集めるため、name が必須 -->
+      <input type="hidden" id="report-target-type" name="target_type" value="" />
+      <input type="hidden" id="report-target-id" name="target_id" value="" />
+
+      <div class="space-y-2" id="report-result">
+        {{range reportReasons}}
+          <button
+            hx-post="/reports"
+            hx-include="#report-target-type, #report-target-id"
+            hx-vals='{"reason": "{{.Value}}"}'
+            hx-target="#report-result"
+            hx-swap="innerHTML"
+            class="w-full text-left px-4 py-3 rounded border border-gray-200
+                   text-sm hover:bg-gray-50 hover:border-gray-300 transition-colors"
+          >
+            {{.Label}}
+          </button>
+        {{end}}
+      </div>
+    </div>
+
+    <!-- フッター -->
+    <div class="p-4 border-t border-gray-100">
+      <button onclick="closeReportModal()"
+        class="w-full py-2 text-sm text-gray-500 hover:text-gray-700">
+        キャンセル
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function openReportModal(targetType, targetId) {
+    // hidden フィールドに値をセットする
+    document.getElementById("report-target-type").value = targetType;
+    document.getElementById("report-target-id").value = targetId;
+
+    // モーダルを表示する
+    document.getElementById("report-overlay").classList.remove("hidden");
+    document.getElementById("report-modal").classList.remove("hidden");
+  }
+
+  function closeReportModal() {
+    document.getElementById("report-overlay").classList.add("hidden");
+    document.getElementById("report-modal").classList.add("hidden");
+
+    // 報告結果をリセットする（次回開いたとき理由ボタンが表示される）
+    // ページをリロードせずにリセットするため HTMX で再取得する
+    htmx.ajax("GET", "/components/report-reasons", "#report-result");
+  }
+</script>
+{{end}}

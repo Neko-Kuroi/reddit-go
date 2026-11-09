@@ -1,0 +1,47 @@
+{{define "title"}}コミュニティを作成 · reddit_clone{{end}}
+{{define "content"}}
+<div class="max-w-lg mx-auto mt-12 px-4">
+  <h1 class="text-2xl font-bold mb-6">コミュニティを作成</h1>
+
+  <form action="/subreddits/new" method="post"
+    class="bg-white border border-gray-200 rounded p-6 space-y-4">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">
+        コミュニティ名
+      </label>
+      <input type="text" name="name"
+        value="{{.Name}}"
+        placeholder="例: elixir"
+        class="w-full border {{if .Errors.Name}}border-red-400{{else}}border-gray-300{{end}}
+               rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-400"
+      />
+      <p class="text-xs text-gray-400 mt-1">英数字とアンダースコアのみ・3〜21文字</p>
+      {{if .Errors.Name}}
+        <p class="text-red-500 text-xs mt-1">{{.Errors.Name}}</p>
+      {{end}}
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">
+        説明（任意）
+      </label>
+      <textarea name="description" rows="3"
+        placeholder="このコミュニティは何について話す場所ですか？"
+        class="w-full border {{if .Errors.Description}}border-red-400{{else}}border-gray-300{{end}} rounded px-3 py-2 text-sm
+               focus:outline-none focus:border-blue-400 resize-none"
+      >{{.Description}}</textarea>
+      {{if .Errors.Description}}
+        <p class="text-red-500 text-xs mt-1">{{.Errors.Description}}</p>
+      {{end}}
+    </div>
+
+    <button type="submit"
+      class="w-full bg-blue-500 text-white rounded py-2 text-sm font-medium hover:bg-blue-600">
+      コミュニティを作成する
+    </button>
+
+  </form>
+</div>
+{{end}}

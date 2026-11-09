@@ -1,0 +1,23 @@
+{{define "join_button"}}
+{{if .Joined}}
+  <button
+    hx-post="/r/{{.Subreddit.Name}}/leave"
+    hx-target="#join-button"
+    hx-swap="innerHTML"
+    class="w-full border border-blue-500 text-blue-500 rounded-full
+           py-1 text-sm hover:bg-blue-50"
+  >
+    参加中
+  </button>
+{{else}}
+  <button
+    hx-post="/r/{{.Subreddit.Name}}/join"
+    hx-target="#join-button"
+    hx-swap="innerHTML"
+    class="w-full bg-blue-500 text-white rounded-full
+           py-1 text-sm hover:bg-blue-600"
+  >
+    参加する
+  </button>
+{{end}}
+{{end}}

@@ -1,0 +1,77 @@
+{{define "post_card"}}
+<div class="bg-white border border-gray-200 rounded hover:border-gray-400 mb-2 flex">
+
+  <!-- 投票エリア -->
+  <div class="bg-gray-50 w-10 flex flex-col items-center py-2 gap-1 rounded-l"
+    id="post-vote-{{.Post.ID}}">
+    <button
+      hx-post="/posts/{{.Post.ID}}/vote"
+      hx-vals='{"value": 1}'
+      hx-target="#post-vote-{{.Post.ID}}"
+      hx-swap="innerHTML"
+      class="text-gray-400 hover:text-orange-500"
+    >▲</button>
+    <span class="text-xs font-bold text-gray-700">{{.Post.Score}}</span>
+    <button
+      hx-post="/posts/{{.Post.ID}}/vote"
+      hx-vals='{"value": -1}'
+      hx-target="#post-vote-{{.Post.ID}}"
+      hx-swap="innerHTML"
+      class="text-gray-400 hover:text-blue-500"
+    >▼</button>
+  </div>
+
+  <!-- 投稿内容 -->
+  <div class="p-2 flex-1">
+
+    <div class="flex items-start gap-2">
+      <a href="/r/{{.Post.SubredditName}}/{{.Post.ID}}"
+        class="text-sm font-medium text-gray-900 hover:underline flex-1">
+        {{.Post.Title}}
+      </a>
+
+      {{if eq .Post.Type "link"}}
+        <a href="{{.Post.URL}}" target="_blank" rel="noopener noreferrer"
+          class="text-xs text-blue-500 hover:underline whitespace-nowrap">
+          {{urlHost .Post.URL}} ↗
+        </a>
+      {{else}}
+        <span class="text-xs text-gray-400">text</span>
+      {{end}}
+    </div>
+
+    <div class="flex items-center gap-2 mt-1 text-xs text-gray-500">
+      {{if .ShowSubreddit}}
+        <a href="/r/{{.Post.SubredditName}}" class="font-medium hover:underline">
+          r/{{.Post.SubredditName}}
+        </a>
+        <span>•</span>
+      {{end}}
+      <span>
+        投稿者
+        <a href="/u/{{.Post.AuthorUsername}}" class="hover:underline">
+          u/{{.Post.AuthorUsername}}
+        </a>
+      </span>
+      <span>•</span>
+      <span>{{timeAgo .Post.InsertedAt}}</span>
+    </div>
+
+    <div class="mt-1 flex items-center gap-2">
+      <a href="/r/{{.Post.SubredditName}}/{{.Post.ID}}"
+        class="text-xs text-gray-500 hover:bg-gray-100 px-1 py-0.5 rounded">
+        💬 {{.Post.CommentCount}} コメント
+      </a>
+
+      {{if and .CurrentUser (ne .CurrentUser.ID .Post.AuthorID)}}
+        <button
+          onclick="openReportModal('post', '{{.Post.ID}}')"
+          class="text-xs text-gray-400 hover:text-gray-600">
+          報告
+        </button>
+      {{end}}
+    </div>
+
+  </div>
+</div>
+{{end}}

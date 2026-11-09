@@ -1,0 +1,92 @@
+{{define "title"}}{{.Post.Title}} · reddit_clone{{end}}
+{{define "content"}}
+<div class="max-w-3xl mx-auto px-4 py-4">
+
+  <!-- 投稿本体 -->
+  <div class="bg-white border border-gray-200 rounded p-4 mb-4">
+    <div class="flex gap-3">
+
+      <!-- 投票 -->
+      <div id="post-vote-{{.Post.ID}}" class="flex flex-col items-center gap-1">
+        {{template "vote_buttons" (voteBtn "post" .Post.ID .Post.Score)}}
+      </div>
+
+      <div class="flex-1">
+        <h1 class="text-xl font-bold text-gray-900 mb-1">{{.Post.Title}}</h1>
+
+        <div class="text-xs text-gray-500 mb-3 flex gap-2">
+          <a href="/r/{{.Post.SubredditName}}" class="hover:underline font-medium">
+            r/{{.Post.SubredditName}}
+          </a>
+          <span>•</span>
+          <a href="/u/{{.Post.AuthorUsername}}" class="hover:underline">
+            u/{{.Post.AuthorUsername}}
+          </a>
+        </div>
+
+        {{if and (eq .Post.Type "text") .Post.Body}}
+          <p class="text-sm text-gray-800 whitespace-pre-wrap mb-3">{{.Post.Body}}</p>
+        {{end}}
+
+        {{if eq .Post.Type "link"}}
+          <a href="{{.Post.URL}}" target="_blank" rel="noopener noreferrer"
+            class="text-sm text-blue-500 hover:underline break-all">
+            {{.Post.URL}} ↗
+          </a>
+        {{end}}
+
+        {{if and .CurrentUser (eq .CurrentUser.ID .Post.AuthorID)}}
+          <form action="/posts/{{.Post.ID}}/delete" method="post" class="mt-2">
+            <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+            <button type="submit"
+              onclick="return confirm('この投稿を削除しますか？')"
+              class="text-xs text-red-400 hover:text-red-600">
+              削除
+            </button>
+          </form>
+        {{end}}
+      </div>
+    </div>
+  </div>
+
+  <!-- コメント投稿フォーム -->
+  {{if .CurrentUser}}
+    <div class="bg-white border border-gray-200 rounded p-4 mb-4">
+      <p class="text-sm font-medium mb-2">コメントを追加</p>
+      <form action="/posts/{{.Post.ID}}/comments" method="post">
+      <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+        <input type="hidden" name="parent_id" value="" />
+        <textarea name="body" rows="4"
+          placeholder="コメントを入力してください"
+          class="w-full border border-gray-300 rounded p-2 text-sm resize-none
+                 focus:outline-none focus:border-blue-400"
+        ></textarea>
+        <div class="flex justify-end mt-2">
+          <button type="submit"
+            class="px-4 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+            投稿する
+          </button>
+        </div>
+      </form>
+    </div>
+  {{end}}
+
+  <!-- コメント一覧 -->
+  <div class="bg-white border border-gray-200 rounded p-4">
+    {{if .Comments}}
+      {{range .Comments}}
+        {{template "comment_tree" (node . $.CurrentUser $.CSRFToken)}}
+      {{end}}
+    {{else}}
+      <p class="text-gray-400 text-sm text-center py-4">
+        まだコメントはありません。最初のコメントを投稿しましょう！
+      </p>
+    {{end}}
+  </div>
+
+</div>
+
+<!-- 報告モーダル -->
+{{template "report_modal" .}}
+
+{{end}}

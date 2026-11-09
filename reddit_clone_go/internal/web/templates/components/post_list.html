@@ -1,0 +1,22 @@
+{{define "post_list"}}
+{{if .Posts}}
+  {{range .Posts}}
+    {{template "post_card" (card . $.CurrentUser $.ShowSubreddit)}}
+  {{end}}
+
+  {{if .HasMore}}
+    <div class="text-center py-4"
+      hx-get="/r/{{.Subreddit.Name}}/posts?sort={{.Sort}}&page={{add .Page 1}}"
+      hx-trigger="revealed"
+      hx-target="this"
+      hx-swap="outerHTML"
+    >
+      <button class="px-6 py-2 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">
+        もっと見る
+      </button>
+    </div>
+  {{end}}
+{{else}}
+  <p class="text-gray-500 text-center py-8">まだ投稿がありません</p>
+{{end}}
+{{end}}
